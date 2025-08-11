@@ -48,51 +48,63 @@ Access:
          nameservers:
    
           addresses: [10.0.20.1,8.8.8.8]
-```
+
      version: 2
+```
 4. Updated packages:
-```   
+
+```
    sudo apt update && sudo apt upgrade -y
-```   
+```
+      
+
 5. Reserved IP in DHCP server.
+
 
 ### Phase 2 – Network and Firewall Baseline
 1. Verified VLAN20 trunk port connection.
 2. Enabled UFW:
+
 ```
    sudo ufw allow 22/tcp
    sudo ufw allow from 10.0.20.0/24 to any port 80 proto tcp
    sudo ufw allow from 10.0.20.0/24 to any port 443 proto tcp
-```   
+```
 3. Confirmed connectivity from admin workstation.
 
 ### Phase 3 – GitLab CE Installation
 1. Installed dependencies:
+
 ```
    sudo apt install -y curl openssh-server ca-certificates tzdata perl
 ```
 2. Added GitLab repository:
-   ```
+```   
    curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
 ```
 3. Installed GitLab CE:
 ```   
    sudo EXTERNAL_URL="http://10.0.20.20" apt install gitlab-ce -y
 ```
+         
 4. Verified service and accessed web UI for initial root password setup.
 
 ### Phase 4 – Nextcloud Installation
 1. Installed Apache, MariaDB, PHP, and extensions:
-```   
+```
+
    sudo apt install apache2 mariadb-server libapache2-mod-php php-gd php-mysql php-curl php-mbstring php-intl php-gmp php-bcmath php-xml php-zip unzip -y
 ```
+
 2. Secured MariaDB and created Nextcloud DB/user.
 3. Downloaded and extracted Nextcloud:
-```   
+```
+   
    wget https://download.nextcloud.com/server/releases/latest.zip
    unzip latest.zip -d /var/www
    sudo chown -R www-data:www-data /var/www/nextcloud
 ```
+
 4. Configured Apache vhost for Nextcloud.
 5. Enabled required modules and restarted Apache.
 
@@ -101,6 +113,7 @@ Access:
 ```
    sudo apt install samba -y
 ```
+
 2. Created shared directory:
 ```
    sudo mkdir -p /srv/samba/share
@@ -114,15 +127,16 @@ Access:
 ```   
    sudo apt install apache2 tftpd-hpa syslinux-common pxelinux ipxe -y
 ```
+   
 2. Created PXE root and copied bootloader files.
 3. Configured PXE menu with basic entries (local boot, memtest).
 4. Set DHCP options 66 (server IP) and 67 (boot file).
 5. Verified PXE boot on test client.
 
 ## Service Overview
-GitLab CE – Internal repo hosting, CI/CD potential, restricted to VLAN20.  
-Nextcloud – LAN-based file sync and collaboration, web interface via Apache.  
-Samba – Cross-platform LAN file sharing.  
+GitLab CE – Internal repo hosting, CI/CD potential, restricted to VLAN20. 
+Nextcloud – LAN-based file sync and collaboration, web interface via Apache. 
+Samba – Cross-platform LAN file sharing. 
 PXE Boot – Network-based tool/OS deployment starter menu.
 
 ## Network/Service Diagram
@@ -145,6 +159,7 @@ PXE Boot – Network-based tool/OS deployment starter menu.
                     | SSH (22/tcp)      |
                     +-------------------+
 ```
+
 
 ## Security Snapshot
 - UFW default deny inbound.
